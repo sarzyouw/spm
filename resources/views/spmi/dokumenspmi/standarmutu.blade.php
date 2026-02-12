@@ -1,0 +1,69 @@
+@extends('layouts.app')
+
+@section('title', 'Standar Mutu - SPMI STMI')
+
+@section('content')
+{{-- HERO SECTION ASLI --}}
+
+@if(!session('logged_in'))
+<section class="hero-section" style="background-color: #1e4bb1; color: white; padding: 100px 0; text-align: center;">
+    <div class="container">
+        <h1 style="font-size: 3.5rem; font-weight: bold;">Standar Mutu</h1>
+        <p style="font-size: 1.5rem; opacity: 0.9;">Politeknik STMI Jakarta</p>
+    </div>
+</section>
+@endif
+
+<section class="py-5">
+    <div class="container bg-white shadow-sm p-4 p-md-5 rounded-3 border-start border-4 border-info">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">Dokumen Standar Mutu <span class="text-primary"></span></h2>
+            <div class="mx-auto bg-primary rounded" style="width: 70px; height: 4px;"></div>
+        </div>
+        <div class="table-responsive mt-4">
+            <table id="tabelPublic" class="table table-bordered table-hover align-middle w-100">
+                <thead class="text-white text-center" style="background-color:var(--primary-color);">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Dokumen</th>
+                        <th>Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($dokumen as $index => $doc)
+                        <tr>
+                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td>{{ $doc->nama_dok }}</td>
+                            <td class="text-center">
+                                @if (Session::has('logged_in'))
+                                    <a href="{{ route('dokumen.download', $doc->no_dokumen) }}" class="btn btn-sm btn-success">
+                                        <i class="fas fa-download me-1"></i> Unduh
+                                    </a>
+                                @else
+                                    {{-- Tombol ini memicu Modal Login di Navbar --}}
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                        <i class="fas fa-lock me-1"></i> Login untuk Unduh
+                                    </button>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="4" class="text-center">Data tidak ditemukan.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $('#tabelPublic').DataTable({
+        language: { url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" },
+        pageLength: 10
+    });
+});
+</script>
+@endpush
+@endsection
